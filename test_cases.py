@@ -124,3 +124,9 @@ def test_get_user_with_duplicated_username(self):
     self.conn.commit()
     result = get_user('alice')
     self.assertIsNotNone(result)
+
+def test_connection_error(self):
+    os.rename(self.db_name, 'temp.db')
+    with self.assertRaises(sqlite3.OperationalError):
+        get_user('alice')
+    os.rename('temp.db', self.db_name)

@@ -4,7 +4,7 @@ from test_case_streamlit import request_suggested_test_cases, run_tests_with_cov
 
 st.title("Test Case Generation Tool")
 
-st.write("Upload your Python sample code and existing test cases. Fireworks AI will suggest additional test cases, and we'll calculate code coverage for both.")
+st.write("Upload your Python sample code and existing test cases.")
 
 source_code_input = st.text_area("Sample Code", height=200, placeholder="Paste your Python sample code here...")
 test_cases_input = st.text_area("Test Cases", height=200, placeholder="Paste your test cases here...")
