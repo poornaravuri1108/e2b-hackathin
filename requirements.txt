@@ -1,0 +1,8 @@
+fireworks-ai 
+openai 
+e2b_code_interpreter
+langchain
+langsmith
+Django
+psycopg2
+python-dotenv
