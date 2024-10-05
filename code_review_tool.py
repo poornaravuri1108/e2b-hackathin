@@ -10,7 +10,7 @@ FIREWORKS_API_KEY = os.getenv("FIREWORKS_API_KEY")
 E2B_API_KEY = os.getenv("E2B_API_KEY")
 
 SYSTEM_PROMPT = """
-You are an expert code reviewer specializing in Python. Analyze the given code and provide a response in the following template:
+You are an expert code reviewer specializing in Python. Analyze the given code and provide a response in the following format:
 
 1. Refactored code (full implementation)
 2. Vulnerabilities detected in original code (one line)
@@ -88,23 +88,16 @@ def review_code(code):
             messages=messages,
         )
 
-        response_message = response.choices[0].message
-        review = response_message.content
-        refactored_code = match_code_block(review)
-
-        original_execution = code_interpret(code_interpreter, code)
-        refactored_execution = code_interpret(code_interpreter, refactored_code)
-
-        original_compilation_status, original_compilation_message = classify_compilation(original_execution)
-        refactored_compilation_status, refactored_compilation_message = classify_compilation(refactored_execution)
+        response_message = response.choices[0].message.content
+        refactored_code = match_code_block(response_message)
 
         # Extract information from the review
+        lines = response_message.split('\n')
         vulnerabilities = ""
         changes = ""
         time_complexity_original = ""
         time_complexity_refactored = ""
 
-        lines = review.split('\n')
         for line in lines:
             if line.startswith('2.'):
                 vulnerabilities = line.replace('2.', '').strip()
@@ -114,6 +107,12 @@ def review_code(code):
                 time_complexity_original = line.replace('4.', '').strip()
             elif line.startswith('5.'):
                 time_complexity_refactored = line.replace('5.', '').strip()
+
+        original_execution = code_interpret(code_interpreter, code)
+        refactored_execution = code_interpret(code_interpreter, refactored_code)
+
+        original_compilation_status, original_compilation_message = classify_compilation(original_execution)
+        refactored_compilation_status, refactored_compilation_message = classify_compilation(refactored_execution)
 
         return {
             "suggested_code": refactored_code,
@@ -125,12 +124,5 @@ def review_code(code):
             "code_efficiency": f"{refactored_compilation_status}: {refactored_compilation_message}"
         }
 
-def compile_code(code):
-    with CodeInterpreter(api_key=E2B_API_KEY) as code_interpreter:
-        execution = code_interpret(code_interpreter, code)
-        status, message = classify_compilation(execution)
-        return f"{status}: {message}"
-
-# This function can be used directly in your Streamlit app
 def process_code(code):
     return review_code(code)
