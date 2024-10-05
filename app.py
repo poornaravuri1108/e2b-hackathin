@@ -41,48 +41,52 @@ def code_submission_page():
             st.session_state['code_efficiency'] = review_results.get("code_efficiency", "")
 
     if st.session_state['code']:
-        st.subheader("Your Code:")
-        st.code(st.session_state['code'], language='python')
-        
-        st.subheader("Code Vulnerabilities:")
-        if st.session_state['vulnerabilities']:
-            st.write(st.session_state['vulnerabilities'])
-        else:
-            st.write("No vulnerabilities detected.")
+        col1, col2 = st.columns(2)
 
-        st.subheader("Time Complexity:")
-        if st.session_state['time_complexity']:
-            st.write(st.session_state['time_complexity'])
-        else:
-            st.write("No time complexity information available.")
-
-        st.subheader("Compile Status:")
-        if st.session_state['compiled_status']:
-            st.write(st.session_state['compiled_status'])
-        else:
-            st.write("No compilation status available.")
-
-        if st.session_state.get('suggested_code'):
-            st.subheader("Suggested Code:")
-            st.code(st.session_state['suggested_code'], language='python')
-
-            st.subheader("Suggested Code Changes:")
-            if st.session_state['suggested_vulnerabilities']:
-                st.write(st.session_state['suggested_vulnerabilities'])
+        with col1:
+            st.subheader("Your Code:")
+            st.code(st.session_state['code'], language='python')
+            
+            st.subheader("Code Vulnerabilities:")
+            if st.session_state['vulnerabilities']:
+                st.write(st.session_state['vulnerabilities'])
             else:
-                st.write("No changes suggested.")
+                st.write("No vulnerabilities detected.")
 
-            st.subheader("Suggested Code Time Complexity:")
-            if st.session_state['suggested_time_complexity']:
-                st.write(st.session_state['suggested_time_complexity'])
+            st.subheader("Time Complexity:")
+            if st.session_state['time_complexity']:
+                st.write(st.session_state['time_complexity'])
             else:
-                st.write("No time complexity information available for the refactored code.")
+                st.write("No time complexity information available.")
 
-            st.subheader("Suggested Code Compile Status and Efficiency:")
-            if st.session_state['code_efficiency']:
-                st.write(st.session_state['code_efficiency'])
+            st.subheader("Compile Status:")
+            if st.session_state['compiled_status']:
+                st.write(st.session_state['compiled_status'])
             else:
-                st.write("No compilation or efficiency information available for the refactored code.")
+                st.write("No compilation status available.")
+
+        with col2:
+            if st.session_state.get('suggested_code'):
+                st.subheader("Suggested Code:")
+                st.code(st.session_state['suggested_code'], language='python')
+
+                st.subheader("Suggested Code Changes:")
+                if st.session_state['suggested_vulnerabilities']:
+                    st.write(st.session_state['suggested_vulnerabilities'])
+                else:
+                    st.write("No changes suggested.")
+
+                st.subheader("Suggested Code Time Complexity:")
+                if st.session_state['suggested_time_complexity']:
+                    st.write(st.session_state['suggested_time_complexity'])
+                else:
+                    st.write("No time complexity information available for the refactored code.")
+
+                st.subheader("Suggested Code Compile Status and Efficiency:")
+                if st.session_state['code_efficiency']:
+                    st.write(st.session_state['code_efficiency'])
+                else:
+                    st.write("No compilation or efficiency information available for the refactored code.")
 
 def main():
     initialize_session_state()
