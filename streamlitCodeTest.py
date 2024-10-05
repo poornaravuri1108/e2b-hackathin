@@ -1,6 +1,7 @@
 import streamlit as st
 from e2b_interpreter import compile_code
 from fireworks_code_review import review_code  
+import requests
 
 
 if 'code' not in st.session_state:
@@ -20,7 +21,6 @@ if 'suggested_time_complexity' not in st.session_state:
 if 'code_efficiency' not in st.session_state:
     st.session_state['code_efficiency'] = ''
 
-# Page 1: Code Submission with additional features
 def code_submission_page():
     st.title("Code Submission")
 
@@ -41,7 +41,6 @@ def code_submission_page():
             st.session_state['suggested_time_complexity'] = review_results.get("suggested_time_complexity", "")
             st.session_state['code_efficiency'] = compile_code(st.session_state['suggested_code'])
 
-    # Display user and suggested code with corresponding analysis
     if st.session_state['code']:
         st.subheader("Your Code:")
         st.text_area("Your Code", value=st.session_state['code'], height=150, disabled=True)
@@ -66,18 +65,15 @@ def code_submission_page():
             st.subheader("Suggested Code Compile Status and Efficiency:")
             st.write(st.session_state['code_efficiency'])
 
-        # Button for moving to the next step (Test case page)
         st.button("Proceed to Test Cases", on_click=test_case_page)
 
 
-# Page 2: Test Case Submission (unchanged from previous)
 def test_case_page():
     st.title("Submit Test Cases")
     
     test_case_input = st.text_area("Submit your test cases", height=200, key="test_case_input")
     if st.button("Send Test Cases"):
         st.session_state['user_test_cases'] = test_case_input
-        # Send test cases to Fireworks AI for suggestions
         test_response = requests.post("https://fireworks_ai_api/check_test_cases", json={"test_cases": test_case_input})
         suggested_test_cases = test_response.json().get("suggested_test_cases", "")
         st.session_state['suggested_test_cases'] = suggested_test_cases
@@ -88,7 +84,6 @@ def test_case_page():
         st.subheader("Suggested Test Cases:")
         st.text_area("Suggested Test Cases", value=st.session_state['suggested_test_cases'], height=150, disabled=True)
 
-        # Option to select test cases and check coverage
         selected_test_cases = st.radio("Choose the test cases for checking coverage:", ("Your Test Cases", "Suggested Test Cases"))
         if st.button("Check Coverage"):
             test_cases_to_check = st.session_state['user_test_cases'] if selected_test_cases == "Your Test Cases" else st.session_state['suggested_test_cases']
@@ -99,8 +94,6 @@ def test_case_page():
                 st.write(f"Test Case Coverage: {st.session_state['coverage_report']}")
                 st.download_button("Download Coverage Report", data=st.session_state['coverage_report'], file_name="coverage_report.txt")
 
-
-# Flow control for pages
 page = st.sidebar.selectbox("Choose Page", ["Code Submission", "Test Case Submission"])
 
 if page == "Code Submission":
