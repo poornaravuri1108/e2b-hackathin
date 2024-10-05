@@ -1,8 +1,6 @@
 import openai
 import json
-import sys
 import os
-import re
 from dotenv import load_dotenv
 from e2b_code_interpreter import CodeInterpreter
 
@@ -33,7 +31,7 @@ client = openai.OpenAI(
 def code_interpret(e2b_code_interpreter, code):
     print("Running code interpreter...")
     # Replace input() with a mock input value
-    modified_code = code.replace("input(", "'Vasek_E2B' #")
+    modified_code = code.replace("input(", "'mock_user' #")
     # Add database and table initialization
     init_code = """
 import sqlite3
@@ -63,12 +61,12 @@ init_db()
 
     return exec
 
-pattern = re.compile(r'```python\n(.*?)\n```', re.DOTALL)
 def match_code_block(llm_response):
+    import re
+    pattern = re.compile(r'```python\n(.*?)\n```', re.DOTALL)
     match = pattern.search(llm_response)
     if match:
-        code = match.group(1)
-        return code
+        return match.group(1)
     return ""
 
 def classify_compilation(execution_result):
@@ -78,7 +76,7 @@ def classify_compilation(execution_result):
         stdout = execution_result.logs.stdout
         return "Compiled", f"Successfully compiled and executed. Output: {stdout}"
 
-def perform_code_review(code):
+def review_code(code):
     with CodeInterpreter(api_key=E2B_API_KEY) as code_interpreter:
         messages = [
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -92,7 +90,7 @@ def perform_code_review(code):
 
         response_message = response.choices[0].message
         review = response_message.content
-        refactored_code = match_code_block(response_message.content)
+        refactored_code = match_code_block(review)
 
         original_execution = code_interpret(code_interpreter, code)
         refactored_execution = code_interpret(code_interpreter, refactored_code)
@@ -100,48 +98,39 @@ def perform_code_review(code):
         original_compilation_status, original_compilation_message = classify_compilation(original_execution)
         refactored_compilation_status, refactored_compilation_message = classify_compilation(refactored_execution)
 
+        # Extract information from the review
+        vulnerabilities = ""
+        changes = ""
+        time_complexity_original = ""
+        time_complexity_refactored = ""
+
+        lines = review.split('\n')
+        for line in lines:
+            if line.startswith('2.'):
+                vulnerabilities = line.replace('2.', '').strip()
+            elif line.startswith('3.'):
+                changes = line.replace('3.', '').strip()
+            elif line.startswith('4.'):
+                time_complexity_original = line.replace('4.', '').strip()
+            elif line.startswith('5.'):
+                time_complexity_refactored = line.replace('5.', '').strip()
+
         return {
-            "review": review,
-            "original_execution": {
-                "status": original_compilation_status,
-                "message": original_compilation_message,
-                "stderr": original_execution.logs.stderr,
-            },
-            "refactored_execution": {
-                "status": refactored_compilation_status,
-                "message": refactored_compilation_message,
-                "stderr": refactored_execution.logs.stderr,
-            }
+            "suggested_code": refactored_code,
+            "vulnerabilities": vulnerabilities,
+            "time_complexity": time_complexity_original,
+            "suggested_vulnerabilities": changes,
+            "suggested_time_complexity": time_complexity_refactored,
+            "compiled_status": f"{original_compilation_status}: {original_compilation_message}",
+            "code_efficiency": f"{refactored_compilation_status}: {refactored_compilation_message}"
         }
 
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <path_to_python_file>")
-        sys.exit(1)
+def compile_code(code):
+    with CodeInterpreter(api_key=E2B_API_KEY) as code_interpreter:
+        execution = code_interpret(code_interpreter, code)
+        status, message = classify_compilation(execution)
+        return f"{status}: {message}"
 
-    file_path = sys.argv[1]
-    
-    try:
-        with open(file_path, 'r') as file:
-            code = file.read()
-    except FileNotFoundError:
-        print(f"Error: File '{file_path}' not found.")
-        sys.exit(1)
-
-    result = perform_code_review(code)
-
-    print("\n=== Code Review ===")
-    print(result["review"])
-
-    print("\n=== Original Code Execution ===")
-    print("Status:", result["original_execution"]["status"])
-    print("Message:", result["original_execution"]["message"])
-    print("Stderr:", result["original_execution"]["stderr"])
-
-    print("\n=== Refactored Code Execution ===")
-    print("Status:", result["refactored_execution"]["status"])
-    print("Message:", result["refactored_execution"]["message"])
-    print("Stderr:", result["refactored_execution"]["stderr"])
-
-if __name__ == "__main__":
-    main()
+# This function can be used directly in your Streamlit app
+def process_code(code):
+    return review_code(code)
