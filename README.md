@@ -128,3 +128,17 @@ For any questions or support, feel free to reach out to us at [kaushikq.ravindra
 ---
 
 _Develop smarter, ship faster, and review with confidence!_ 🧑‍💻
+
+Sample Images of code reviewing:
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/e5e11734-a919-4320-af6d-5bf71a51f555/9eb644f4-7aa0-4f81-bd5d-8607f1339d76/image.png)
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/e5e11734-a919-4320-af6d-5bf71a51f555/da0c03cc-80fd-411f-827f-f1dc2561c7c0/image.png)
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/e5e11734-a919-4320-af6d-5bf71a51f555/ba7c98fa-4fa7-4720-978a-695e2c7bf064/image.png)
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/e5e11734-a919-4320-af6d-5bf71a51f555/071904d4-30dc-4ece-8418-b6755d9ad723/image.png)
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/e5e11734-a919-4320-af6d-5bf71a51f555/4b8120d0-3976-44be-b5c8-cbacf48d474b/image.png)
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/e5e11734-a919-4320-af6d-5bf71a51f555/57338705-fa7b-4b2d-a537-d4b5bd65d7d1/image.png)
+
