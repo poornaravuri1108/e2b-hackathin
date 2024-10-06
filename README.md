@@ -106,7 +106,7 @@ Our tool integrates **Fireworks AI** and the **E2B Code Interpreter SDK** to pro
 Our tool offers detailed visualizations for test coverage. Below is an example of a coverage pie chart generated after running test cases:
 
 ![Test Coverage](https://via.placeholder.com/400x300)
-![Test run screenshots](https://drive.google.com/drive/folders/1T5uZ3tb4vZzGyOLaM08OAIXm-EubEeMJ?usp=sharing)
+![Test run screenshots]((https://drive.google.com/drive/folders/1T5uZ3tb4vZzGyOLaM08OAIXm-EubEeMJ?usp=sharing))
 
 ---
 
