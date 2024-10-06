@@ -2,3 +2,5 @@ fireworks-ai
 openai
 e2b_code_interpreter
 python-dotenv
+coverage
+streamlit
